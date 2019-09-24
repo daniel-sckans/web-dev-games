@@ -37,6 +37,7 @@ const populateProblemDom = () => {
             const newClass = wordsSubset[Math.floor(Math.random() * wordsSubset.length)]; 
             if(!(child.className.indexOf(newClass) + 1)) child.className += `${child.className ? ' ' : ''}${newClass}`; 
         }
+        while(Math.random() < 0.16) child.setAttribute(words.data[Math.floor(Math.random() * 2500)], words.data[Math.floor(Math.random() * 2500)]); 
         
         const nonParentingElements = ['P', 'H4', 'IMG']; 
         (Math.random() < 0.33 ? descendantElement : Math.random() < 0.5 && lastChild !== problemElement ? lastChild.parentElement : lastChild).appendChild(child); 
@@ -55,7 +56,21 @@ const explicitDom = parentElementString => {
             indent++; 
             el = el.parentElement; 
         }
-        element.prepend(` ${element.tagName}${element.id ? `#${element.id}` : ''}${element.className ? `.${element.className.replace(/\s/g, '.')}` : ''}`); 
+
+        const attr = element.attributes; 
+        const attrMap = {}; 
+        for(let key in attr) {
+            const nodeName = attr[key].nodeName; 
+            if(nodeName !== 'id' && nodeName !== 'class' && nodeName !== undefined) {
+                attrMap[nodeName] = attr[key].nodeValue; 
+            }
+        }
+        let attrString = ''; 
+        for(let key in attrMap) {
+            attrString += `[${key}="${attrMap[key]}"]`; 
+        }
+
+        element.prepend(` ${element.tagName}${attrString}${element.id ? `#${element.id}` : ''}${element.className ? `.${element.className.replace(/\s/g, '.')}` : ''}`); 
         const outlineFrame = document.createElement('outline-frame'); 
         do {
             outlineFrame.innerText += ' │'; 
