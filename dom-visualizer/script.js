@@ -2,6 +2,7 @@ let words;
 let timeCounter = 0, staticTimeCounter = 0, winsCounter = 0; 
 let stopwatchEnabled = true; 
 const elements = []; 
+let safeAttr = ['id', 'class']; 
 
 window.addEventListener('DOMContentLoaded', async () => {
     words = await loadWords(); 
@@ -29,6 +30,7 @@ const populateProblemDom = () => {
     let lastChild = problemElement; 
     let descendantElement = problemElement; 
     const wordsSubset = [];
+    safeAttr = ['id', 'class']; 
     for(let i = 0; i < 3; i++) wordsSubset.push(words.data[Math.floor(Math.random() * 2500)]);
     for(let i = 0; i < Math.floor(Math.random() * 8) + 2; i++) {
         let child = document.createElement(elements[Math.floor(Math.random() * elements.length)].tagName); 
@@ -37,7 +39,10 @@ const populateProblemDom = () => {
             const newClass = wordsSubset[Math.floor(Math.random() * wordsSubset.length)]; 
             if(!(child.className.indexOf(newClass) + 1)) child.className += `${child.className ? ' ' : ''}${newClass}`; 
         }
-        while(Math.random() < 0.16) child.setAttribute(words.data[Math.floor(Math.random() * 2500)], words.data[Math.floor(Math.random() * 2500)]); 
+        while(Math.random() < 0.16) {
+            for(let i = 0; i < 2; i++) safeAttr.push(words.data[Math.floor(Math.random() * 2500)]); 
+            child.setAttribute(safeAttr[safeAttr.length - 1], safeAttr[safeAttr.length - 2]); 
+        }
         
         const nonParentingElements = ['P', 'H4', 'IMG']; 
         (Math.random() < 0.33 ? descendantElement : Math.random() < 0.5 && lastChild !== problemElement ? lastChild.parentElement : lastChild).appendChild(child); 
@@ -67,7 +72,7 @@ const explicitDom = parentElementString => {
         }
         let attrString = ''; 
         for(let key in attrMap) {
-            attrString += `[${key}="${attrMap[key]}"]`; 
+            attrString = `[${key}="${attrMap[key]}"]` + attrString; 
         }
 
         element.prepend(` ${element.tagName}${attrString}${element.id ? `#${element.id}` : ''}${element.className ? `.${element.className.replace(/\s/g, '.')}` : ''}`); 
@@ -89,7 +94,7 @@ const evaluateInput = interfaceKeydown => {
     }
     let html = document.querySelector('interface').innerText.replace(/\u00a0|\r*\n*/g, ''); 
     html.replace('"', ''); html.replace('"', ''); 
-    document.querySelector('preview').innerHTML = html; 
+    document.querySelector('preview').innerHTML = DOMPurify.sanitize(html, {ALLOWED_ATTR: safeAttr}); 
     explicitDom('preview'); 
     if(document.querySelector('problem').textContent.replace(/\s/g, '') !== document.querySelector('preview').textContent.replace(/\s/g, '')) return; 
     stopwatchEnabled = false; 
