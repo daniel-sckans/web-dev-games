@@ -1,3 +1,4 @@
+const forceBackendUrl = false; 
 const hexCharacters = '0123456789abcdef'; 
 
 window.addEventListener('DOMContentLoaded', dOMContentLoaded => {
@@ -19,6 +20,7 @@ window.addEventListener('DOMContentLoaded', dOMContentLoaded => {
     let winsCounter = 0; 
 
     document.querySelector('enter-color').addEventListener('click', enterColorClick => {
+        if(document.querySelector('problem-color').className == 'success') return; 
         const enterColorValue = enterColorClick.target.innerText; 
         document.querySelector('preview-color-' + enterColorClick.target.parentElement.tagName).innerText = enterColorValue; 
         
@@ -46,6 +48,7 @@ window.addEventListener('DOMContentLoaded', dOMContentLoaded => {
             if(!localStorage.getItem('guessTheHexHighScore') || +localStorage.getItem('guessTheHexHighScore') < +score) {
                 localStorage.setItem('guessTheHexHighScore', score); 
             }
+            sendWin(); 
         } 
     }); 
 
@@ -75,4 +78,24 @@ const newProblemColor = () => {
     for(let i = 0; i < 3; i++) problemColor += hexCharacters.charAt(Math.floor(Math.random()*16)); 
     document.querySelector('problem-color').style.backgroundColor = `#${problemColor}`; 
     return problemColor; 
+}; 
+
+const sendWin = () => {
+    const message = {
+        Name: localStorage.getItem("name"), 
+        Game: "guess_the_hex"
+    }; 
+    if(!message.Name) return;
+    
+    const xhr = new XMLHttpRequest(); 
+    xhr.open('POST', !forceBackendUrl && window.location.hostname === 'localhost' ? 'http://localhost:8080/web-dev-games' : 'https://web-dev-games-mr44t3zfia-uc.a.run.app/web-dev-games'); 
+    xhr.setRequestHeader('Content-Type', 'application/json'); 
+    xhr.send(JSON.stringify(message)); 
+
+    xhr.onreadystatechange = () => {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText); 
+            console.log('XHR response: ', response.Status); 
+        }
+    }; 
 }; 

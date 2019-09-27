@@ -1,3 +1,4 @@
+let forceBackendUrl = false; 
 let words; 
 let timeCounter = 0, staticTimeCounter = 0, winsCounter = 0; 
 let stopwatchEnabled = true; 
@@ -109,6 +110,7 @@ const evaluateInput = interfaceKeydown => {
     if(!localStorage.getItem('domVisualizerHighScore') || +localStorage.getItem('domVisualizerHighScore') < +score) {
         localStorage.setItem('domVisualizerHighScore', score); 
     }
+    sendWin(); 
 }; 
 
 const populateNewGame = () => {
@@ -126,4 +128,24 @@ const stopwatch = () => {
         staticTimeCounter++; 
         document.querySelector('time span').innerText = timeCounter++
     }
+}; 
+
+const sendWin = () => {
+    const message = {
+        Name: localStorage.getItem("name"), 
+        Game: "dom_visualizer"
+    }; 
+    if(!message.Name) return;
+    
+    const xhr = new XMLHttpRequest(); 
+    xhr.open('POST', !forceBackendUrl && window.location.hostname === 'localhost' ? 'http://localhost:8080/web-dev-games' : 'https://web-dev-games-mr44t3zfia-uc.a.run.app/web-dev-games'); 
+    xhr.setRequestHeader('Content-Type', 'application/json'); 
+    xhr.send(JSON.stringify(message)); 
+
+    xhr.onreadystatechange = () => {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText); 
+            console.log('XHR response: ', response); 
+        }
+    }; 
 }; 
