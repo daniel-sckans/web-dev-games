@@ -1,0 +1,36 @@
+:root {
+    box-sizing: border-box; 
+}
+
+*, 
+::before, 
+::after {
+    box-sizing: inherit; 
+    margin: 0; 
+    padding: 0; 
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif; 
+}
+
+app {
+    width: 100vw; 
+    height: 100vh; 
+
+    display: grid; 
+    grid-template: 1fr 1fr / 1fr 1fr; 
+}
+
+problem-dom {
+    grid-row: span 2; 
+    background-color: #ff0; 
+}
+
+feedback {
+    background-color: #00f; 
+}
+
+interface {
+    background-color: #0f0; 
+}
