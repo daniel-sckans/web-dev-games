@@ -12,30 +12,69 @@
 <body>
     <game>
         <problem-color>
-            <problem-color-r>?</problem-color-r>
-            <problem-color-g>?</problem-color-g>
-            <problem-color-b>?</problem-color-b>
         </problem-color>
-        
-        <preview-color>
-            <preview-color-r>0</preview-color-r>
-            <preview-color-g>0</preview-color-g>
-            <preview-color-b>0</preview-color-b>
-        </preview-color>
-        
-        <feedback>
-            <container>
-                <game-title>versus hex</game-title>
-                
-                <play-again>play again</play-again>
-            </container>
-        </feedback>
         
         <enter-color>
             <r></r>
             <g></g>
             <b></b>
         </enter-color>
+        <script>
+            document.querySelectorAll('enter-color > *').forEach((enterColorChild, rGBIndex) => {
+                for(let i = 0; i < 16; i++) {
+                    const colorButton = document.createElement('div'); 
+                    colorButton.style.backgroundColor = `#${['f00', '0f0', '00f'][rGBIndex].replace('f', hexCharacters.charAt(i))}`; 
+                    colorButton.innerHTML = hexCharacters.charAt(i); 
+                    enterColorChild.append(colorButton); 
+                }; 
+            }); 
+        </script>
+
+        <blocker></blocker>
+        
+        <interface>
+            <game-title>versus hex</game-title>
+
+            <in-between-games>
+                <login>
+                    <who-are-you>Who are you?</who-are-you>
+                    <select>
+                        <option selected="selected">select your name</option>
+                        <option>Essa</option>
+                        <option>Mohammad</option>
+                        <option>Emily</option>
+                        <option>Victoria</option>
+                        <option>JC</option>
+                        <option>Mallory</option>
+                        <option>Chandler</option>
+                        <option>Trey</option>
+                        <option>Brandon</option>
+                        <option>Kenzie</option>
+                        <option>Tatenda</option>
+                        <option>Rjay</option>
+                        <option>Ahmad</option>
+                        <option>Xin</option>
+                        <option>Taylor</option>
+                        <option>Kenyatta</option>
+                        <option>Lauren</option>
+                        <option>Drake</option>
+                        <option>Francis</option>
+                    </select>
+                </login>
+                <new-match>new match</new-match>
+            </in-between-games>
+            
+            <active-game>
+                <opponent>opponent: <span></span></opponent>
+                <resign>resign</resign>
+                <feedback></feedback>
+            </active-game>
+        </interface>
     </game>
+
+    <error onclick="window.location.reload(true);">
+        Sorry, but error. 
+        <error-reload>try again</error-reload>
+    </error>
 </body>
 </html>
