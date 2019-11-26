@@ -5,7 +5,8 @@ let RGB = {R: '0', G: '0', B: '0'};
 let name = ''; 
 const messages = {}; 
 [
-	'INITIALIZE',
+    'INITIALIZE',
+    'REGISTER',
 	'JOIN',
 	'WAIT',
 	'START',
